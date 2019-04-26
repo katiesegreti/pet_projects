@@ -104,6 +104,11 @@ wnba_2018 <- wnba_2018 %>%
 #save this again!!!
 write_csv(wnba_2018, "wnba_2018_3.csv")
 
+# read the saved data in as wnba_2018
+wnba_2018 <- read_csv("wnba_2018_3.csv")
+# convert team to factor
+wnba_2018$team <- as.factor(wnba_2018$team)
+
 #totals by college / country
 colleges <- wnba_2018 %>%
   filter(college != "") %>%
@@ -159,10 +164,93 @@ age_by_team %>%
     y = "",
     title = "Average age of WNBA players by team"
   )
- 
-# rebounds by height
+
+# league leaders
+#points
 wnba_2018 %>%
-  filter(g > 15 & ft_percent > 0) %>%
-  ggplot(aes(x = ft_percent, y = height)) +
-  geom_point()
-  
+  filter(g > 20) %>%
+  filter(pts > 17.7) %>%
+  ggplot(aes(x = reorder(player, pts), y = pts)) +
+  geom_col() +
+  geom_text(aes(label = pts, y = pts - 1), color = "white") +
+  geom_label(aes(label = team, fill = team), y = 1) +
+  coord_flip() +
+  a_theme +
+  labs(
+    title = "WNBA top scorers - 2018 season",
+    subtitle = "average points scored per game"
+  )
+
+# fg percent
+wnba_2018 %>%
+  filter(g > 20) %>%
+  top_n(10, fg_percent) %>%
+  ggplot(aes(x = reorder(player, fg_percent), y = fg_percent)) +
+  geom_col() +
+  geom_text(aes(label = paste0(fg_percent, "%"), y = fg_percent - 3), color = "white") +
+  geom_label(aes(label = team, fill = team), y = 3) +
+  coord_flip() +
+  a_theme +
+  labs(
+    title = "WNBA top shooters - 2018 season",
+    subtitle = "average field goal percent"
+  )
+
+# 3pt
+wnba_2018 %>%
+  filter(g > 20) %>%
+  top_n(10, x3p_percent) %>%
+  ggplot(aes(x = reorder(player, x3p_percent), y = x3p_percent)) +
+  geom_col() +
+  geom_text(aes(label = paste0(x3p_percent, "%"), y = x3p_percent - 3), color = "white") +
+  geom_label(aes(label = team, fill = team), y = 3) +
+  coord_flip() +
+  a_theme +
+  labs(
+    title = "WNBA top 3-point shooters - 2018 season",
+    subtitle = "average 3-point shots made per game"
+  )
+
+# rebounds
+wnba_2018 %>%
+  filter(g > 20) %>%
+  top_n(10, reb) %>%
+  ggplot(aes(x = reorder(player, reb), y = reb)) +
+  geom_col() +
+  geom_text(aes(label = reb, y = reb - 1), color = "white") +
+  geom_label(aes(label = team, fill = team), y = 0.5) +
+  coord_flip() +
+  a_theme +
+  labs(
+    title = "WNBA top rebounders - 2018 season",
+    subtitle = "average rebounds per game"
+  )
+# assists
+wnba_2018 %>%
+  filter(g > 20) %>%
+  top_n(10, ast) %>%
+  ggplot(aes(x = reorder(player, ast), y = ast)) +
+  geom_col() +
+  geom_text(aes(label = ast, y = ast - 0.5), color = "white") +
+  geom_label(aes(label = team, fill = team), y = 0.4) +
+  coord_flip() +
+  a_theme +
+  labs(
+    title = "WNBA top assists - 2018 season",
+    subtitle = "average assists per game"
+  )
+
+# steals
+wnba_2018 %>%
+  filter(g > 20) %>%
+  top_n(10, stl) %>%
+  ggplot(aes(x = reorder(player, stl), y = stl)) +
+  geom_col() +
+  geom_text(aes(label = stl, y = stl - 0.2), color = "white") +
+  geom_label(aes(label = team, fill = team), y = 0.1) +
+  coord_flip() +
+  a_theme +
+  labs(
+    title = "WNBA top steals - 2018 season",
+    subtitle = "average steals per game"
+  )
