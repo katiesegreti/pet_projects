@@ -91,7 +91,7 @@ star2 <- star2 %>%
 #redo square_tbl
 square_tbl1 <- data.frame("color" = c("turquoise", "yellow", "black", "all"),
                           "total" = c(164, 98, 62, 324),
-                          "done" = c(61, 26, 24, 111)
+                          "done" = c(61, 34, 24, 119)
                           ) %>%
   mutate(remaining = total - done,
          pct_done = done / total)
