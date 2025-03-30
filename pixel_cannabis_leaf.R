@@ -2,16 +2,6 @@ library(ggplot2)
 library(dplyr)
 
 
-#blank theme
-pix_theme <- theme(panel.grid = element_blank(), 
-                   panel.background = element_rect(fill = datachips_pink),
-                   plot.background = element_rect(fill = datachips_pink),
-                   axis.text = element_blank(), 
-                   axis.ticks = element_blank(), 
-                   axis.title = element_blank(),
-                   panel.grid.major = element_blank(),
-                   panel.grid.minor = element_blank(),
-                   legend.position = "none")
 
 a_green <- "#00FF00"
 bg <- "#2F4F4F"
@@ -19,10 +9,34 @@ outline <- "#A9A9A9"
 datachips_green <- "#36ff33"
 datachips_grey <- "#6D6D6F"
 datachips_pink <- "#ea27c2"
+lavender = "#bf80ff"
+dark <- "#34495e"
+datachips_yellow <- "#FFFF1A"
+
+#blank theme
+pix_theme <- theme(panel.grid = element_blank(), 
+                   panel.background = element_rect(fill = dark),
+                   plot.background = element_rect(fill = dark),
+                   axis.text = element_blank(), 
+                   axis.ticks = element_blank(), 
+                   axis.title = element_blank(),
+                   panel.grid.major = element_blank(),
+                   panel.grid.minor = element_blank(),
+                   legend.position = "none",
+                   plot.title = element_text(
+                     family = "mono" ,
+                     size = 48,
+                     hjust = 0.5,
+                     vjust = 0.05,
+                     face = "bold",
+                     color = "white"
+                     
+                   )
+)
 
 #populate data frame with coordinates
 blank_leaf <- data.frame(x = rep(-19:19, each = 38), y = rep(1:38, times = 39), 
-                    c = 0, a = 0)
+                    c = 0)
 
 a_leaf <- blank_leaf %>%
   mutate(c = case_when((x == 0 & y %in% 2:37) ~ 1,
@@ -44,40 +58,28 @@ a_leaf <- blank_leaf %>%
                        (abs(x) == 16 & y %in% c(12:13, 26:27)) ~ 1,
                        (abs(x) == 17 & y %in% 12:13) ~ 1,
                        (abs(x) == 18 & y == 13) ~ 1,
+                       TRUE ~ c) 
+                  ) %>%
+  # make a heart
+  mutate(c = case_when((x == 0 & y %in% 9:15) ~ 2,
+                       (abs(x) == 1 & y %in% 10:16) ~ 2,
+                       (abs(x) == 2 & y %in% 11:17) ~ 2,
+                       (abs(x) == 3 & y %in% 12:17) ~ 2,
+                       (abs(x) == 4 & y %in% 13:16) ~ 2,
+                       (abs(x) == 5 & y %in% 14:15) ~ 2,
                        TRUE ~ c)
+         ) %>%
+  # add white section to heart?
+  mutate(c = ifelse(((x == -3 & y == 15) ), 3, c))
                        
-         )
+         
 
 
 a_leaf %>%
   ggplot(aes(x, y, fill = factor(c))) +
   geom_point(size = 7, shape = 22, color="transparent") +
-  scale_fill_manual(values = c("LightSteelBlue", "forestgreen")) +
+  scale_fill_manual(values = c( dark, datachips_green, datachips_pink, "white")) +
   pix_theme +
   xlim(-20, 20) +
-  ylim(1, 38)
-
-a_leaf %>%
-  ggplot(aes(x, y, fill = factor(c))) +
-  geom_point(size = 7, shape = 22, color="transparent") +
-  scale_fill_manual(values = c("purple", "seagreen")) +
-  pix_theme +
-  xlim(-20, 20) +
-  ylim(1, 38)
-
-a_leaf %>%
-  ggplot(aes(x, y, fill = factor(c))) +
-  geom_point(size = 7, shape = 22, color="transparent") +
-  scale_fill_manual(values = c("cornflowerblue", "springgreen")) +
-  pix_theme +
-  xlim(-20, 20) +
-  ylim(1, 38)
-
-a_leaf %>%
-  ggplot(aes(x, y, fill = factor(c))) +
-  geom_point(size = 7, shape = 22, color="transparent") +
-  scale_fill_manual(values = c("DarkTurquoise", "OliveDrab")) +
-  pix_theme +
-  xlim(-20, 20) +
-  ylim(1, 38)
+  ylim(-2, 38) 
 
